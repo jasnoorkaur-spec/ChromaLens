@@ -1,0 +1,15 @@
+node_modules/
+**/node_modules/
+frontend/dist/
+backend/dist/
+backend/uploads/*
+!backend/uploads/.gitkeep
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+*.log
+*.traineddata
+.DS_Store

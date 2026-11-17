@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @default(cuid()) @db.VarChar(30)
+  name           String          @db.VarChar(120)
+  email          String          @unique @db.VarChar(254)
+  password       String          @db.VarChar(255)
+  createdAt      DateTime        @default(now()) @map("created_at") @db.DateTime(3)
+  cvdPreferences CvdPreference[]
+  scans          ScanHistory[]
+  sessions       Session[]
+
+  @@map("users")
+}
+
+model CvdPreference {
+  id              String   @id @default(cuid()) @db.VarChar(30)
+  userId          String   @map("user_id") @db.VarChar(30)
+  cvdType         String   @map("cvd_type") @db.VarChar(40)
+  preferredPalette String? @map("preferred_palette") @db.VarChar(80)
+  createdAt       DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([userId])
+  @@map("cvd_preferences")
+}
+
+model ScanHistory {
+  id                  String           @id @default(cuid()) @db.VarChar(30)
+  userId              String           @map("user_id") @db.VarChar(30)
+  originalImageUrl    String?          @map("original_image_url") @db.VarChar(2048)
+  transformedImageUrl String?           @map("transformed_image_url") @db.VarChar(2048)
+  cvdType             String           @map("cvd_type") @db.VarChar(40)
+  createdAt           DateTime         @default(now()) @map("created_at") @db.DateTime(3)
+  user                User             @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  transformations     Transformation[]
+
+  @@index([userId, createdAt])
+  @@map("scan_history")
+}
+
+model Transformation {
+  id                   String     @id @default(cuid()) @db.VarChar(30)
+  scanId               String     @map("scan_id") @db.VarChar(30)
+  type                 String     @map("transformation_type") @db.VarChar(80)
+  url                  String?    @map("transformed_image_url") @db.VarChar(2048)
+  createdAt            DateTime   @default(now()) @map("created_at") @db.DateTime(3)
+  scan                 ScanHistory @relation(fields: [scanId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([scanId])
+  @@map("transformations")
+}
+
+model Session {
+  id        String   @id @default(cuid()) @db.VarChar(30)
+  userId    String   @map("user_id") @db.VarChar(30)
+  tokenHash String   @unique @map("token_hash") @db.Char(64)
+  expiresAt DateTime @map("expires_at") @db.DateTime(3)
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}

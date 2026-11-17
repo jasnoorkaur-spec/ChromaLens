@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">ChromaLens split-lens mark</title>
+  <desc id="desc">A deep teal lens split into two clear apertures, with a warm orange center line and accessible blue and teal bars.</desc>
+  <rect width="512" height="512" rx="116" fill="#f7f6f1"/>
+  <path d="M256 76c-99.4 0-180 80.6-180 180s80.6 180 180 180" fill="none" stroke="#103f3b" stroke-width="35" stroke-linecap="round"/>
+  <path d="M256 76c99.4 0 180 80.6 180 180s-80.6 180-180 180" fill="none" stroke="#103f3b" stroke-width="35" stroke-linecap="round" stroke-dasharray="196 28 196" transform="rotate(180 256 256)" opacity=".88"/>
+  <path d="M256 115v282" stroke="#e88952" stroke-width="18" stroke-linecap="round"/>
+  <path d="M148 300h62v60h-62z" rx="10" fill="#1a8b84"/>
+  <path d="M302 248h62v112h-62z" rx="10" fill="#567fbd"/>
+  <path d="M148 261h62" stroke="#103f3b" stroke-width="12" stroke-linecap="round"/>
+  <path d="M302 209h62" stroke="#103f3b" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="256" cy="256" r="13" fill="#e88952"/>
+</svg>
