@@ -56,19 +56,37 @@ export async function analyzeWithGemini({ imageBuffer, ocr, colors, cvdType, sam
     preparedDemoContext: sampleContext || null,
   };
   const prompt = `Analyze this image for accessibility, not medical diagnosis. Use only labels and relationships genuinely supported by the image or the supplied prepared demo context. Never infer a category meaning from hue alone. If a label or meaning is uncertain, say so plainly in the meaning or uncertainty fields and use a low confidence value. Do not invent chart values, legend associations, or map facts. Be concise and actionable. Context: ${JSON.stringify(context)}`;
-  const interaction = await ai.interactions.create({
-    model,
-    store: false,
-    input: [
-      { type: 'text', text: prompt },
-      { type: 'image', data: imageBuffer.toString('base64'), mime_type: 'image/png' },
-    ],
-    response_format: {
-      type: 'text',
-      mime_type: 'application/json',
-      schema: responseSchema,
-    },
+
+  const timeoutMs = 8000;
+  let timer;
+  const timeoutPromise = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      reject(new Error(`Gemini API request timed out after ${timeoutMs}ms.`));
+    }, timeoutMs);
+    timer?.unref?.();
   });
+
+  let interaction;
+  try {
+    interaction = await Promise.race([
+      ai.interactions.create({
+        model,
+        store: false,
+        input: [
+          { type: 'text', text: prompt },
+          { type: 'image', data: imageBuffer.toString('base64'), mime_type: 'image/png' },
+        ],
+        response_format: {
+          type: 'text',
+          mime_type: 'application/json',
+          schema: responseSchema,
+        },
+      }),
+      timeoutPromise,
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
 
   const raw = interaction.output_text;
   if (!raw) throw new Error('Gemini returned an empty response.');

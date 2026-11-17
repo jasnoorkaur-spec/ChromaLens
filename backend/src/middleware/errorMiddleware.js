@@ -6,6 +6,7 @@ export function notFound(_request, response) {
 
 export function errorHandler(error, _request, response, _next) {
   if (response.headersSent) return;
+  console.error('Unhandled API Error:', error);
   if (error instanceof multer.MulterError) {
     const status = error.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
     const message = error.code === 'LIMIT_FILE_SIZE'
@@ -14,7 +15,7 @@ export function errorHandler(error, _request, response, _next) {
     return response.status(status).json({ success: false, error: { code: error.code, message } });
   }
   const status = Number.isInteger(error.status) && error.status >= 400 && error.status <= 499 ? error.status : 500;
-  const message = status < 500 ? error.message : 'An unexpected server error occurred.';
+  const message = error.message || (status < 500 ? 'Request error' : 'An unexpected server error occurred.');
   return response.status(status).json({
     success: false,
     error: { code: status === 500 ? 'INTERNAL_ERROR' : 'REQUEST_ERROR', message },
