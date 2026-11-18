@@ -57,7 +57,7 @@ export async function analyzeWithGemini({ imageBuffer, ocr, colors, cvdType, sam
   };
   const prompt = `Analyze this image for accessibility, not medical diagnosis. Use only labels and relationships genuinely supported by the image or the supplied prepared demo context. Never infer a category meaning from hue alone. If a label or meaning is uncertain, say so plainly in the meaning or uncertainty fields and use a low confidence value. Do not invent chart values, legend associations, or map facts. Be concise and actionable. Context: ${JSON.stringify(context)}`;
 
-  const timeoutMs = 8000;
+  const timeoutMs = 14000;
   let timer;
   const timeoutPromise = new Promise((_, reject) => {
     timer = setTimeout(() => {
@@ -66,22 +66,39 @@ export async function analyzeWithGemini({ imageBuffer, ocr, colors, cvdType, sam
     timer?.unref?.();
   });
 
+  const sendRequest = () => ai.interactions.create(
+    {
+      model,
+      store: false,
+      input: [
+        { type: 'text', text: prompt },
+        { type: 'image', data: imageBuffer.toString('base64'), mime_type: 'image/png' },
+      ],
+      response_format: {
+        type: 'text',
+        mime_type: 'application/json',
+        schema: responseSchema,
+      },
+    },
+    { retries: { strategy: 'none' } }
+  );
+
   let interaction;
   try {
     interaction = await Promise.race([
-      ai.interactions.create({
-        model,
-        store: false,
-        input: [
-          { type: 'text', text: prompt },
-          { type: 'image', data: imageBuffer.toString('base64'), mime_type: 'image/png' },
-        ],
-        response_format: {
-          type: 'text',
-          mime_type: 'application/json',
-          schema: responseSchema,
-        },
-      }),
+      (async () => {
+        try {
+          return await sendRequest();
+        } catch (firstError) {
+          const is503 = firstError?.status === 503 || firstError?.statusCode === 503 || /503|high demand|overloaded/i.test(String(firstError?.message || ''));
+          if (is503) {
+            // Google's 503 spike is temporary: wait 1.8 seconds and retry once
+            await new Promise((resolve) => setTimeout(resolve, 1800));
+            return await sendRequest();
+          }
+          throw firstError;
+        }
+      })(),
       timeoutPromise,
     ]);
   } finally {

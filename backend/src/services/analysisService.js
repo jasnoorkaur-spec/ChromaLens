@@ -131,7 +131,7 @@ export async function analyzeImageRequest({ file, sampleId, cvdType = 'general-a
 
   onProgress({ stage: 'understanding-color-relationships', status: 'active', message: process.env.GEMINI_API_KEY?.trim() ? 'Gemini Vision is interpreting the image context.' : 'Checking whether contextual AI is available.' });
   let interpretation = null;
-  let providerFailed = false;
+  let providerError = null;
   try {
     interpretation = await analyzeWithGemini({
       imageBuffer: originalBuffer,
@@ -146,8 +146,13 @@ export async function analyzeImageRequest({ file, sampleId, cvdType = 'general-a
       } : null,
     });
   } catch (error) {
-    providerFailed = true;
-    console.warn(`Gemini contextual analysis failed: ${getSafeGeminiFailure(error)}`);
+    providerError = getSafeGeminiFailure(error);
+    const isQuota = /429|rate limit|quota/i.test(providerError);
+    if (isQuota) {
+      console.info(`Gemini Free Tier daily quota reached (20 requests/day). Seamlessly using high-contrast local OCR and pattern analysis.`);
+    } else {
+      console.warn(`Gemini contextual analysis unavailable (${providerError}); using local/prepared analysis.`);
+    }
   }
   onProgress({
     stage: 'understanding-color-relationships',
@@ -159,6 +164,8 @@ export async function analyzeImageRequest({ file, sampleId, cvdType = 'general-a
   let summary;
   let detectedElements;
   let audit;
+  const isRateLimited = Boolean(providerError && /429|rate limit|quota/i.test(providerError));
+  const isHighDemand = Boolean(providerError && /503|high demand|overload/i.test(providerError));
   if (interpretation) {
     ai = {
       source: 'live-gemini',
@@ -178,9 +185,13 @@ export async function analyzeImageRequest({ file, sampleId, cvdType = 'general-a
     ai = {
       source: 'prepared-demo-fallback',
       status: 'fallback',
-      message: providerFailed
-        ? 'Live Gemini was unavailable; this is prepared demo analysis combined with fresh local OCR and color results.'
-        : 'Live Gemini is not configured; this is prepared demo analysis combined with fresh local OCR and color results.',
+      message: isHighDemand
+        ? 'Gemini 3.8 Flash is experiencing a temporary high-demand spike on Google servers. Showing prepared accessible pattern analysis with symbols and companion table. Try again in a minute.'
+        : isRateLimited
+          ? 'Gemini Free Tier daily quota is exhausted. Showing prepared accessible pattern analysis with symbols and companion table.'
+          : providerError
+            ? 'Live Gemini was unavailable; showing prepared demo analysis combined with fresh local OCR and pattern results.'
+            : 'Live Gemini is not configured; showing prepared demo analysis combined with fresh local OCR and pattern results.',
     };
     summary = fixture.summary;
     detectedElements = normalizeAiElements(fixture.detectedElements);
@@ -189,9 +200,15 @@ export async function analyzeImageRequest({ file, sampleId, cvdType = 'general-a
     ai = {
       source: 'local-only',
       status: 'unavailable',
-      message: 'Gemini is unavailable; this result contains local OCR and pixel analysis only. Color meanings are not inferred.',
+      message: isHighDemand
+        ? 'Gemini 3.8 Flash is experiencing a temporary high-demand spike on Google servers. Image processed locally with OCR, pixel sampling, and accessible patterns. Try again in a minute.'
+        : isRateLimited
+          ? 'Gemini Free Tier daily quota reached. Image processed locally with OCR, pixel sampling, and accessible pattern conversion.'
+          : providerError
+            ? 'Gemini analysis unavailable; image processed locally with OCR, pixel sampling, and accessible pattern conversion.'
+            : 'Gemini is not configured; image processed locally with OCR, pixel sampling, and accessible pattern conversion.',
     };
-    summary = 'Image processed locally. Extracted text and dominant colors are reported; color meaning remains unverified without contextual analysis.';
+    summary = 'Image processed locally. Extracted text, dominant colors, and accessible patterns are generated; color meaning remains unverified without contextual AI.';
     detectedElements = colorsToLocalElements(dominantColors);
     audit = createLocalAudit({ colors: dominantColors });
   }
