@@ -91,12 +91,55 @@ export default function Results() {
       <section className="card-surface result-section">
         <div className="eyebrow">VISIBLE SIGNALS</div><h2>Detected elements</h2>
         {elements.length ? <div className="element-list">{elements.map((element, index) => <article className="element-card" key={`${element.name || 'element'}-${index}`}>
-          <span className="element-swatch" style={{ '--swatch': element.color || '#83918b' }} aria-hidden="true"/><div className="element-content"><div className="element-title-row"><h3>{element.name || `Element ${index + 1}`}</h3><code>{element.color || 'Color not reported'}</code></div>
-            {element.label && <p><strong>Label:</strong> {element.label}</p>}{element.meaning && <p><strong>Meaning:</strong> {element.meaning}</p>}
+          <span className="element-swatch" style={{ '--swatch': element.color || '#83918b' }} aria-hidden="true"/>
+          <div className="element-content">
+            <div className="element-title-row"><h3>{element.name || `Element ${index + 1}`}</h3><code>{element.color || 'Color not reported'}</code></div>
+            {element.label && <p><strong>Label:</strong> {element.label}</p>}
+            {element.meaning && <p><strong>Meaning:</strong> {element.meaning}</p>}
+            {(element.symbol || element.pattern) && (
+              <div className="element-pattern-badge">
+                {element.pattern && <span className={`element-pattern-chip pattern-${element.pattern}`}/>}
+                <span>{element.symbol} {element.patternName || element.pattern || 'Pattern assigned'}</span>
+              </div>
+            )}
             <div className="element-confidence">{element.uncertainty ? <span className="uncertainty-tag"><Info size={12}/>{typeof element.uncertainty === 'string' ? element.uncertainty : 'Meaning uncertain'}</span> : element.confidence !== undefined && <span>{valueConfidence(element.confidence)}</span>}</div>
           </div>
         </article>)}</div> : <p className="muted">No detected elements were included in the service response.</p>}
         {Array.isArray(result.dominantColors) && result.dominantColors.length > 0 && <div className="dominant-colors"><h3>Dominant colors</h3><div className="color-chip-list">{result.dominantColors.map((color, index) => <span className="color-chip" key={`${color.hex}-${index}`}><i style={{ backgroundColor: color.hex }} aria-hidden="true"/><code>{color.hex}</code><small>{color.percentage}%</small></span>)}</div></div>}
+        {Array.isArray(result.chartData) && result.chartData.length > 0 && (
+          <div className="table-section">
+            <div className="eyebrow">ACCESSIBLE DATA TABLE</div>
+            <h3 style={{ margin: '6px 0 2px' }}>City Air Quality Data</h3>
+            <p className="muted tiny" style={{ margin: '0 0 8px' }}>Companion table for non-visual and high-contrast screen reader access.</p>
+            <div className="data-table-container">
+              <table className="accessible-data-table">
+                <thead>
+                  <tr>
+                    <th>City</th>
+                    <th>Air-quality category</th>
+                    <th>Value</th>
+                    <th>Symbol</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {result.chartData.map((row, idx) => (
+                    <tr key={`${row.city}-${idx}`}>
+                      <td><strong>{row.city}</strong></td>
+                      <td>{row.category}</td>
+                      <td><code>{row.value}</code></td>
+                      <td>
+                        <span className="sym-badge">
+                          <span className="sym-icon">{row.symbol}</span>
+                          <span>{row.symbol === '▲' ? 'Warning triangle' : row.symbol === 'ℹ' ? 'Exclamation circle' : row.symbol === '✓' ? 'Checkmark' : row.symbol === '✕' ? 'Alert cross' : 'Symbol'}</span>
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </section>
       <section className="card-surface result-section explanation-section">
         <div className="eyebrow">PLAIN-LANGUAGE EXPLANATION</div><h2>What this means</h2>

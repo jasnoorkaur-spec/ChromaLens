@@ -22,3 +22,139 @@
 .analysis-stage-list{list-style:none;display:grid;gap:.55rem;margin:.85rem 0 0;padding:.8rem 0 0;border-top:1px solid #dce4dd}.analysis-stage{display:grid;grid-template-columns:18px minmax(0,1fr) auto;align-items:start;gap:.55rem;color:#66746b;font-size:.78rem;line-height:1.35}.analysis-stage>svg{margin-top:.08rem;flex:0 0 auto}.analysis-stage strong{font-weight:600}.analysis-stage small{display:block;margin-top:.15rem;font-size:.68rem;line-height:1.35;color:#687870}.analysis-stage .stage-progress-number{margin-top:0;white-space:nowrap;font-variant-numeric:tabular-nums}.stage-complete{color:#286a55}.stage-active{color:#194b3b}.stage-failed{color:#a33b35}.status-spin{animation:chromalens-status-spin 1.15s linear infinite}.upload-progress-track{height:5px;margin-top:.7rem;overflow:hidden;background:#dce4dd;border-radius:999px}.upload-progress-track span{display:block;height:100%;background:#25836b;transition:width .2s ease}@keyframes chromalens-status-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.status-spin{animation:none}.upload-progress-track span{transition:none}}
 
 .route-loading{max-width:1230px;margin:2rem auto;padding:1.25rem 1.5rem;border:1px solid #e4e6df;border-radius:14px;background:#fffefa;color:#44544c;font-size:.95rem}
+
+/* Accessible Patterns & Chart Previews */
+.pattern-stripes {
+  background-color: #172126 !important;
+  background-image: repeating-linear-gradient(0deg, #f4f6f0 0 2px, transparent 2px 5px) !important;
+}
+.pattern-dots {
+  background-color: #172126 !important;
+  background-image: radial-gradient(#f4f6f0 1.2px, transparent 1.2px) !important;
+  background-size: 5px 5px !important;
+}
+.pattern-blocks {
+  background-color: #172126 !important;
+  background-image: repeating-linear-gradient(0deg, #f4f6f0 0 7px, transparent 7px 11px) !important;
+}
+.pattern-crosses {
+  background-color: #172126 !important;
+  background-image: repeating-linear-gradient(45deg, #f4f6f0 0 1.5px, transparent 1.5px 6px), repeating-linear-gradient(-45deg, #f4f6f0 0 1.5px, transparent 1.5px 6px) !important;
+}
+.preview-dark-panel {
+  background: #12161a !important;
+  border-color: #262e35 !important;
+  color: #f1f4ea !important;
+}
+.preview-dark-panel .chart-title strong {
+  color: #f1f4ea !important;
+}
+.preview-dark-panel .chart-title small {
+  color: #62b59b !important;
+}
+.preview-dark-panel .mini-legend {
+  color: #c4cdc8 !important;
+}
+.pattern-badge-pill {
+  font-size: 8px;
+  font-weight: 800;
+  color: #f1f4ea;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.pattern-stem-line {
+  width: 1px;
+  height: 12px;
+  background-color: #8c9892;
+  margin: 0 auto 3px;
+}
+.air-bars {
+  height: 155px !important;
+}
+.dark-air-bars {
+  background: repeating-linear-gradient(to bottom, transparent 0 34px, #1c2226 35px, #1c2226 36px) !important;
+  border-bottom: 1.5px solid #4a5450 !important;
+}
+.dark-air-bars small {
+  color: #d1d8d3 !important;
+}
+.pattern-bar {
+  width: 44px !important;
+  min-width: 24px !important;
+  border: 1.5px solid #e8ecdc !important;
+  border-radius: 2px 2px 0 0 !important;
+  position: relative;
+}
+.val-callout {
+  position: absolute;
+  right: -20px;
+  bottom: 2px;
+  font-size: 8.5px;
+  color: #ffffff;
+  font-family: monospace;
+  font-weight: 700;
+  text-shadow: 0 1px 2px #000;
+}
+.element-pattern-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #123d34;
+  background: #eef6f2;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid #c9ded3;
+}
+.element-pattern-chip {
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+  display: inline-block;
+  border: 1px solid #141f25;
+}
+.data-table-container {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid #232c32;
+  background: #14171a;
+  color: #f0f3eb;
+  margin-top: 14px;
+}
+.accessible-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+.accessible-data-table th,
+.accessible-data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #283138;
+}
+.accessible-data-table th {
+  color: #9da8a2;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  background: #1a1e22;
+}
+.accessible-data-table tr:last-child td {
+  border-bottom: none;
+}
+.accessible-data-table .sym-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+.accessible-data-table .sym-icon {
+  font-size: 13px;
+}
+

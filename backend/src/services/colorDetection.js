@@ -43,13 +43,27 @@ export async function detectDominantColors(imageBuffer, limit = 5) {
     });
 }
 
+const LOCAL_PATTERNS = [
+  { pattern: 'stripes', patternName: 'Horizontal stripes', symbol: '▲' },
+  { pattern: 'dots', patternName: 'Stippled dots', symbol: 'ℹ' },
+  { pattern: 'blocks', patternName: 'Segmented blocks', symbol: '✓' },
+  { pattern: 'crosses', patternName: 'Crosshatch (XXXX)', symbol: '✕' },
+  { pattern: 'stripes', patternName: 'Dense lines', symbol: '◆' },
+];
+
 export function colorsToLocalElements(colors) {
-  return colors.map((color, index) => ({
-    name: `Detected color region ${index + 1}`,
-    color: color.hex,
-    label: 'Unlabeled color region',
-    meaning: 'Unknown from pixel color alone.',
-    confidence: 0,
-    uncertainty: 'No contextual label or legend was verified for this color.',
-  }));
+  return colors.map((color, index) => {
+    const pat = LOCAL_PATTERNS[index % LOCAL_PATTERNS.length];
+    return {
+      name: `Detected color region ${index + 1}`,
+      color: color.hex,
+      label: `Region ${index + 1} (${pat.symbol} ${pat.patternName})`,
+      meaning: 'Unknown from pixel color alone; mapped to pattern and symbol.',
+      confidence: 0,
+      uncertainty: 'No contextual label or legend was verified for this color.',
+      symbol: pat.symbol,
+      pattern: pat.pattern,
+      patternName: pat.patternName,
+    };
+  });
 }

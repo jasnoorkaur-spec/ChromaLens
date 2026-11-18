@@ -17,6 +17,9 @@ const normalizeAiElements = (items) => (Array.isArray(items) ? items : []).slice
   meaning: String(item.meaning || 'Meaning could not be verified from available context.').slice(0, 500),
   confidence: Math.max(0, Math.min(1, Number(item.confidence) || 0)),
   uncertainty: String(item.uncertainty || 'Interpretation may be uncertain.').slice(0, 500),
+  symbol: item.symbol ? String(item.symbol).slice(0, 10) : undefined,
+  pattern: item.pattern ? String(item.pattern).slice(0, 30) : undefined,
+  patternName: item.patternName ? String(item.patternName).slice(0, 60) : undefined,
 }));
 
 function getSafeGeminiFailure(error) {
@@ -221,6 +224,7 @@ export async function analyzeImageRequest({ file, sampleId, cvdType = 'general-a
     dominantColors,
     issues: sanitizeIssues(audit.issues),
     recommendations: audit.recommendations.slice(0, 12).map((item) => String(item).slice(0, 400)),
+    chartData: fixture?.chartData || null,
     ai,
     transformedImageUrl: toDataUrl(transformedBuffer),
     originalImageUrl: toDataUrl(originalBuffer),

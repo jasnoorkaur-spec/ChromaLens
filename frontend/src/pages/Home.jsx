@@ -4,25 +4,58 @@ import { ArrowRight, ArrowUpRight, Check, ChevronRight, Eye, ScanLine, Sparkles 
 import { motion, useReducedMotion } from 'framer-motion';
 
 function ProductPreview() {
-  const rows = [
-    { label: 'Q1', a: 72, b: 50 }, { label: 'Q2', a: 84, b: 59 }, { label: 'Q3', a: 94, b: 67 }, { label: 'Q4', a: 100, b: 79 },
+  const items = [
+    { city: 'Delhi', cat: 'POOR', val: 32, sym: '▲', color: '#E07A2B', patternClass: 'pattern-stripes' },
+    { city: 'Mumbai', cat: 'MODERATE', val: 55, sym: 'ℹ', color: '#4A90E2', patternClass: 'pattern-dots' },
+    { city: 'Chennai', cat: 'GOOD', val: 78, sym: '✓', color: '#2E9358', patternClass: 'pattern-blocks' },
+    { city: 'Kolkata', cat: 'UNHEALTHY', val: 18, sym: '✕', color: '#8E44AD', patternClass: 'pattern-crosses' },
   ];
-  return <div className="preview-board" aria-label="Original chart transformed into an accessible chart">
-    <div className="preview-board-header"><div><span className="live-dot"/> CHROMALENS PREVIEW</div><span>CHART · 02</span></div>
+  return <div className="preview-board" aria-label="Original color-coded bar chart transformed into an accessible pattern chart">
+    <div className="preview-board-header"><div><span className="live-dot"/> CHROMALENS PATTERN ENGINE</div><span>CITY AIR QUALITY · TODAY</span></div>
     <div className="preview-chart-pair">
-      <section className="chart-panel original-panel" aria-label="Original chart: revenue shown in red and expenses in green">
-        <div className="chart-title"><div><small>ORIGINAL</small><strong>Quarterly results</strong></div><span className="dots" aria-hidden="true">•••</span></div>
-        <div className="mini-legend"><span><i className="legend-swatch red-swatch"/> Revenue</span><span><i className="legend-swatch green-swatch"/> Expenses</span></div>
-        <div className="bar-chart original-bars">{rows.map((row) => <div className="bar-group" key={row.label}><div className="bars"><span style={{ height: `${row.a}%` }}/><span style={{ height: `${row.b}%` }}/></div><small>{row.label}</small></div>)}</div>
+      <section className="chart-panel original-panel" aria-label="Original chart: color-only bars without patterns">
+        <div className="chart-title"><div><small>ORIGINAL</small><strong>Color only</strong></div><span className="dots" aria-hidden="true">•••</span></div>
+        <div className="mini-legend">
+          <span><i className="legend-swatch" style={{ background: '#E07A2B' }}/> Delhi</span>
+          <span><i className="legend-swatch" style={{ background: '#4A90E2' }}/> Mumbai</span>
+          <span><i className="legend-swatch" style={{ background: '#2E9358' }}/> Chennai</span>
+          <span><i className="legend-swatch" style={{ background: '#8E44AD' }}/> Kolkata</span>
+        </div>
+        <div className="bar-chart original-bars air-bars">
+          {items.map((item) => (
+            <div className="bar-group" key={item.city}>
+              <div className="bars"><span style={{ height: `${item.val}%`, backgroundColor: item.color }}/></div>
+              <small>{item.city}</small>
+            </div>
+          ))}
+        </div>
       </section>
       <div className="preview-arrow" aria-hidden="true"><ArrowRight size={17}/></div>
-      <section className="chart-panel accessible-panel" aria-label="Accessible chart: bars include distinct patterns, labels, and strong outlines">
-        <div className="chart-title"><div><small>CHROMALENS · GENERAL</small><strong>Quarterly results</strong></div><span className="accessible-mark"><Check size={12}/></span></div>
-        <div className="mini-legend accessible-legend"><span><i className="legend-swatch pattern-one"/> Revenue</span><span><i className="legend-swatch pattern-two"/> Expenses</span></div>
-        <div className="bar-chart accessible-bars">{rows.map((row) => <div className="bar-group" key={row.label}><div className="bars"><span style={{ height: `${row.a}%` }}><b>{row.label}</b></span><span style={{ height: `${row.b}%` }}><b>{row.label}</b></span></div><small>{row.label}</small></div>)}</div>
+      <section className="chart-panel accessible-panel preview-dark-panel" aria-label="Accessible chart: bars include distinct patterns, stems, symbols and values">
+        <div className="chart-title"><div><small>CHROMALENS · ACCESSIBLE</small><strong>Patterns &amp; symbols</strong></div><span className="accessible-mark"><Check size={12}/></span></div>
+        <div className="mini-legend accessible-legend">
+          <span>▲ Poor</span>
+          <span>ℹ Mod</span>
+          <span>✓ Good</span>
+          <span>✕ Alert</span>
+        </div>
+        <div className="bar-chart accessible-bars air-bars dark-air-bars">
+          {items.map((item) => (
+            <div className="bar-group" key={item.city}>
+              <div className="pattern-badge-pill"><span>{item.sym}</span> {item.cat}</div>
+              <div className="pattern-stem-line"/>
+              <div className="bars">
+                <span className={`pattern-bar ${item.patternClass}`} style={{ height: `${item.val}%` }}>
+                  <b className="val-callout">{item.val}</b>
+                </span>
+              </div>
+              <small>{item.city}</small>
+            </div>
+          ))}
+        </div>
       </section>
     </div>
-    <div className="preview-insight"><span className="insight-icon"><Eye size={15}/></span><span><strong>Labels carry the meaning.</strong> Pattern, text and color work together.</span><ArrowUpRight className="insight-arrow" size={16}/></div>
+    <div className="preview-insight"><span className="insight-icon"><Eye size={15}/></span><span><strong>Colors converted to distinct patterns:</strong> Stripes, dots, blocks, and crosshatch with symbols and stem lines ensure clarity for all viewers.</span><ArrowUpRight className="insight-arrow" size={16}/></div>
     <div className="preview-decoration decor-one"/><div className="preview-decoration decor-two"/>
   </div>;
 }

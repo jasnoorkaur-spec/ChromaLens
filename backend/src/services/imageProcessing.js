@@ -73,17 +73,45 @@ export function getProfileLabel(cvdType) {
   return getAccessiblePalette(cvdType).label;
 }
 
+function getChartPatternDefs(fgColor = '#e8ecdc', bgColor = '#1e2528') {
+  return `
+    <pattern id="pattern-stripes" width="10" height="6" patternUnits="userSpaceOnUse">
+      <rect width="10" height="6" fill="${bgColor}"/>
+      <line x1="0" y1="2" x2="10" y2="2" stroke="${fgColor}" stroke-width="2"/>
+    </pattern>
+    <pattern id="pattern-dots" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="${bgColor}"/>
+      <circle cx="2" cy="2" r="1.6" fill="${fgColor}"/>
+      <circle cx="6" cy="6" r="1.6" fill="${fgColor}"/>
+    </pattern>
+    <pattern id="pattern-blocks" width="48" height="20" patternUnits="userSpaceOnUse">
+      <rect width="48" height="20" fill="${bgColor}"/>
+      <rect x="0" y="2" width="48" height="10" fill="${fgColor}"/>
+    </pattern>
+    <pattern id="pattern-crosses" width="14" height="14" patternUnits="userSpaceOnUse">
+      <rect width="14" height="14" fill="${bgColor}"/>
+      <path d="M1 1l12 12M13 1L1 13" stroke="${fgColor}" stroke-width="2.2" stroke-linecap="square"/>
+    </pattern>
+  `;
+}
+
 function originalSampleSvg(sampleId) {
   const fixture = sampleFixtures[sampleId];
   if (sampleId === 'bar-chart') {
     const bars = fixture.chartData.map((item, i) => {
-      const x = 210 + i * 190;
-      const emailHeight = item.email * 3.1;
-      const chatHeight = item.chat * 3.1;
-      return `<rect x="${x}" y="${520 - emailHeight}" width="54" height="${emailHeight}" fill="#D64B45"/><rect x="${x + 62}" y="${520 - chatHeight}" width="54" height="${chatHeight}" fill="#32966C"/>${text(x + 47, 566, item.q, 20, '#374249', 600)}`;
+      const x = 180 + i * 235;
+      const barHeight = item.value * 3.6;
+      const y = 520 - barHeight;
+      return `<rect x="${x}" y="${y}" width="94" height="${barHeight}" fill="${item.color}" rx="3"/>` +
+             `<text x="${x + 47}" y="560" font-family="Arial,sans-serif" font-size="20" font-weight="600" text-anchor="middle" fill="#374249">${esc(item.city)}</text>` +
+             `<text x="${x + 47}" y="${y - 12}" font-family="Arial,sans-serif" font-size="16" font-weight="700" text-anchor="middle" fill="#59636A">${item.value}</text>`;
     }).join('');
-    const ticks = [0, 20, 40, 60, 80].map((value) => `<line x1="160" y1="${520 - value * 3.1}" x2="1000" y2="${520 - value * 3.1}" stroke="#E3E7E8"/>${text(115, 527 - value * 3.1, String(value), 16, '#59636A')}`).join('');
-    return svgWrap(`${text(90, 80, fixture.title, 32, '#202A2E', 700)}${text(90, 120, 'Requests (illustrative counts)', 18, '#59636A')}${ticks}<line x1="160" y1="520" x2="1000" y2="520" stroke="#55616A" stroke-width="2"/>${bars}<rect x="300" y="640" width="24" height="24" fill="#D64B45"/>${text(338, 660, 'Email', 20)}<rect x="490" y="640" width="24" height="24" fill="#32966C"/>${text(528, 660, 'Chat', 20)}${text(90, 740, 'Illustrative sample data', 16, '#68737B')}`);
+    const gridLines = [0, 25, 50, 75, 100].map((v) => `<line x1="120" y1="${520 - v * 3.6}" x2="1080" y2="${520 - v * 3.6}" stroke="#E3E7E8"/><text x="80" y="${526 - v * 3.6}" font-family="Arial,sans-serif" font-size="15" fill="#59636A">${v}</text>`).join('');
+    const legend = fixture.chartData.map((item, i) => {
+      const lx = 180 + i * 235;
+      return `<rect x="${lx}" y="670" width="22" height="22" rx="4" fill="${item.color}"/><text x="${lx + 32}" y="687" font-family="Arial,sans-serif" font-size="18" fill="#374249">${esc(item.category)} (${esc(item.city)})</text>`;
+    }).join('');
+    return svgWrap(`${text(80, 75, fixture.title, 32, '#202A2E', 700)}${text(80, 115, 'Air-quality category by city · Values and color-only status', 18, '#59636A')}${gridLines}<line x1="120" y1="520" x2="1080" y2="520" stroke="#55616A" stroke-width="2"/>${bars}${legend}${text(80, 750, 'Original visual relies solely on hue — red, orange, green and purple — without pattern or symbol cues.', 16, '#68737B')}`);
   }
 
   if (sampleId === 'risk-map') {
@@ -107,13 +135,55 @@ function accessibleSampleSvg(sampleId, cvdType) {
   const [email, chat] = palette.series;
 
   if (sampleId === 'bar-chart') {
+    const patternDefs = getChartPatternDefs('#e8ecdc', '#181f22');
     const bars = fixture.chartData.map((item, i) => {
-      const x = 210 + i * 190;
-      const emailHeight = item.email * 3.1;
-      const chatHeight = item.chat * 3.1;
-      return `<rect x="${x}" y="${520 - emailHeight}" width="54" height="${emailHeight}" fill="${email.fill}" stroke="#172126" stroke-width="3"/><path d="M${x} ${520 - emailHeight + 10}l54 -16 M${x} ${520 - emailHeight + 28}l54 -16" stroke="${email.pattern}" stroke-width="3"/><text x="${x + 18}" y="${506 - emailHeight}" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#fff">E</text><rect x="${x + 62}" y="${520 - chatHeight}" width="54" height="${chatHeight}" fill="${chat.fill}" stroke="#172126" stroke-width="3"/><path d="M${x + 62} ${520 - chatHeight + 8}l54 42 M${x + 62} ${520 - chatHeight + 28}l54 42" stroke="${chat.pattern}" stroke-width="3"/><text x="${x + 77}" y="${506 - chatHeight}" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#fff">C</text>${text(x + 47, 566, item.q, 20, '#374249', 600)}`;
+      const x = 160 + i * 235;
+      const barHeight = Math.round(item.value * 3.6);
+      const barTop = 500 - barHeight;
+      const cx = x + 47;
+      const labelY = 175;
+      const cityY = 208;
+      const stemTop = 218;
+
+      return `
+        <text x="${cx}" y="${labelY}" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#e8ecdc" text-anchor="middle">${esc(item.symbol)} ${esc(item.category)}</text>
+        <text x="${cx}" y="${cityY}" font-family="Arial,sans-serif" font-size="18" font-weight="600" fill="#e8ecdc" text-anchor="middle">${esc(item.city)}</text>
+        <line x1="${cx}" y1="${stemTop}" x2="${cx}" y2="${barTop}" stroke="#e8ecdc" stroke-width="2"/>
+        <rect x="${x}" y="${barTop}" width="94" height="${barHeight}" fill="url(#pattern-${item.pattern})" stroke="#e8ecdc" stroke-width="2.5" rx="2"/>
+        <text x="${x + 94 + 14}" y="492" font-family="Arial,sans-serif" font-size="22" font-weight="700" fill="#e8ecdc">${item.value}</text>
+      `;
     }).join('');
-    return svgWrap(`${text(90, 80, `Accessible reconstruction — ${profileLabel}`, 30, '#202A2E', 700)}${text(90, 120, 'E = Email • C = Chat • hatch + outline reinforce series', 18, '#374249')}${[0, 20, 40, 60, 80].map((value) => `<line x1="160" y1="${520 - value * 3.1}" x2="1000" y2="${520 - value * 3.1}" stroke="#D6DCDF"/>${text(115, 527 - value * 3.1, String(value), 16, '#59636A')}`).join('')}<line x1="160" y1="520" x2="1000" y2="520" stroke="#39464C" stroke-width="2"/>${bars}<rect x="300" y="640" width="24" height="24" fill="${email.fill}" stroke="#172126" stroke-width="2"/>${text(338, 660, 'Email (E, diagonal hatch)', 19)}<rect x="650" y="640" width="24" height="24" fill="${chat.fill}" stroke="#172126" stroke-width="2"/>${text(688, 660, 'Chat (C, crosshatch)', 19)}${text(90, 740, `Profile-aware palette; labels, patterns and borders remain in use.`, 16, '#59636A')}`);
+
+    const tableRows = fixture.chartData.map((item, i) => {
+      const ty = 618 + i * 36;
+      return `
+        <text x="120" y="${ty}" font-family="Arial,sans-serif" font-size="16" font-weight="600" fill="#e8ecdc">${esc(item.city)}</text>
+        <text x="290" y="${ty}" font-family="Arial,sans-serif" font-size="16" fill="#c3cfca">${esc(item.category)}</text>
+        <text x="520" y="${ty}" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#e8ecdc">${item.value}</text>
+        <text x="690" y="${ty}" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#e8ecdc">${esc(item.symbol)}</text>
+        <rect x="850" y="${ty - 16}" width="50" height="20" fill="url(#pattern-${item.pattern})" stroke="#e8ecdc" stroke-width="1.5" rx="2"/>
+        <text x="915" y="${ty}" font-family="Arial,sans-serif" font-size="14" fill="#a4b3ad">${esc(item.pattern.toUpperCase())}</text>
+      `;
+    }).join('');
+
+    return svgWrap(`
+      <rect width="1200" height="800" fill="#14171a"/>
+      <defs>${patternDefs}</defs>
+      <text x="70" y="52" font-family="monospace, sans-serif" font-size="14" fill="#8d9a98">text</text>
+      <text x="70" y="90" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#e8ecdc">${esc(fixture.title)}</text>
+      <rect x="910" y="45" width="220" height="34" rx="8" fill="#20282b" stroke="#37454a"/>
+      <text x="1020" y="67" font-family="Arial,sans-serif" font-size="13" font-weight="700" fill="#a0b3ac" text-anchor="middle">ACCESSIBLE PATTERNS · ${esc(profileLabel.toUpperCase())}</text>
+      <line x1="120" y1="500" x2="1080" y2="500" stroke="#8d9a98" stroke-width="2"/>
+      ${bars}
+      <rect x="70" y="550" width="1060" height="215" rx="14" fill="#1b2024" stroke="#2d373e"/>
+      <line x1="70" y1="590" x2="1130" y2="590" stroke="#2d373e" stroke-width="1.5"/>
+      <text x="120" y="578" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#8d9a98">City</text>
+      <text x="290" y="578" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#8d9a98">Air-quality category</text>
+      <text x="520" y="578" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#8d9a98">Value</text>
+      <text x="690" y="578" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#8d9a98">Symbol</text>
+      <text x="850" y="578" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#8d9a98">Pattern Encoding</text>
+      ${tableRows}
+    `);
   }
 
   if (sampleId === 'risk-map') {
@@ -160,20 +230,32 @@ export async function createBestEffortTransformation(imageBuffer, colors = [], c
   const image = sharp(imageBuffer, { failOn: 'error', limitInputPixels: 40_000_000 });
   const metadata = await image.metadata();
   const width = Math.min(metadata.width || 1200, 1600);
-  const height = 116;
+  const height = 136;
   const palette = getAccessiblePalette(cvdType);
-  const visibleColorCount = Math.min(5, colors.length, Math.max(1, Math.floor((width - 32) / 185)));
+  const patternDefs = getChartPatternDefs('#172126', '#f4f6f0');
+  const PATTERN_KEYS = [
+    { id: 'pattern-stripes', symbol: '▲', name: 'Horizontal stripes' },
+    { id: 'pattern-dots', symbol: 'ℹ', name: 'Stippled dots' },
+    { id: 'pattern-blocks', symbol: '✓', name: 'Segmented blocks' },
+    { id: 'pattern-crosses', symbol: '✕', name: 'Crosshatch (XXXX)' },
+    { id: 'pattern-stripes', symbol: '◆', name: 'Dense lines' },
+  ];
+  const visibleColorCount = Math.min(4, colors.length, Math.max(1, Math.floor((width - 32) / 250)));
   const columnWidth = (width - 32) / Math.max(visibleColorCount, 1);
   const labels = colors.slice(0, visibleColorCount).map((item, index) => {
     const x = 16 + index * columnWidth;
     const sourceColor = /^#[0-9a-f]{6}$/i.test(String(item.hex || '')) ? String(item.hex).toUpperCase() : '#737B80';
-    const profileCue = palette.series[index % palette.series.length];
-    const dash = index % 2 === 0 ? '4 2' : 'none';
-    const fontSize = Math.min(15, Math.max(11, Math.floor(columnWidth / 15)));
-    const name = `Color ${index + 1}: ${sourceColor}`;
-    return `<rect x="${x - 4}" y="50" width="35" height="35" rx="4" fill="none" stroke="${profileCue.fill}" stroke-width="3" stroke-dasharray="${dash}"/><rect x="${x}" y="54" width="27" height="27" rx="3" fill="${sourceColor}" stroke="#101820" stroke-width="2"/><text x="${x + 40}" y="73" font-family="Arial,sans-serif" font-size="${fontSize}" font-weight="700" fill="#172126">${esc(name)}</text>`;
+    const pat = PATTERN_KEYS[index % PATTERN_KEYS.length];
+    const fontSize = Math.min(13, Math.max(11, Math.floor(columnWidth / 18)));
+    return `
+      <rect x="${x}" y="52" width="28" height="28" rx="4" fill="${sourceColor}" stroke="#101820" stroke-width="2"/>
+      <text x="${x + 36}" y="71" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#202A2E">→</text>
+      <rect x="${x + 56}" y="50" width="52" height="32" rx="4" fill="url(#${pat.id})" stroke="#172126" stroke-width="2"/>
+      <text x="${x + 116}" y="64" font-family="Arial,sans-serif" font-size="${fontSize}" font-weight="700" fill="#172126">${pat.symbol} ${esc(pat.name)}</text>
+      <text x="${x + 116}" y="80" font-family="Arial,sans-serif" font-size="11" fill="#586760">${esc(sourceColor)}</text>
+    `;
   }).join('');
-  const header = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="100%" height="100%" fill="#fff"/><text x="16" y="31" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#172126">BEST-EFFORT ACCESSIBILITY AID — ${esc(palette.label.toUpperCase())} PROFILE</text>${labels}<text x="16" y="105" font-family="Arial,sans-serif" font-size="12" fill="#46534C">Profile-colored outline accents; source color meaning is not inferred.</text></svg>`);
+  const header = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="100%" height="100%" fill="#fff"/><defs>${patternDefs}</defs><text x="16" y="28" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#172126">ACCESSIBLE PATTERN CONVERSION — ${esc(palette.label.toUpperCase())} PROFILE</text>${labels}<text x="16" y="118" font-family="Arial,sans-serif" font-size="12" fill="#46534C">Colors are reinforced by distinct textural patterns (stripes, dots, blocks, crosshatch) and symbols.</text></svg>`);
   return sharp(imageBuffer, { failOn: 'error', limitInputPixels: 40_000_000 })
     .resize({ width, withoutEnlargement: true })
     .extend({ top: height, background: '#FFFFFF' })

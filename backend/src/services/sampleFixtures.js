@@ -1,21 +1,28 @@
 export const sampleFixtures = {
   'bar-chart': {
-    title: 'Quarterly support requests by channel',
-    summary: 'A grouped bar chart compares quarterly support requests across Email and Chat. The legend names both series; bar color alone should not carry the distinction.',
+    title: 'City Air Quality: Today',
+    summary: 'A color-coded city air-quality bar graph compares pollution categories across Delhi, Mumbai, Chennai, and Kolkata. In the accessible transformation, each bar color is converted to a distinct textural pattern, paired with category symbols, indicator stem lines, and direct value labels.',
     detectedElements: [
-      { name: 'Email series', color: '#D64B45', label: 'Email', meaning: 'Support requests received by email, as stated in the chart legend.', confidence: 0.97, uncertainty: 'Legend association is supplied with this prepared demo.' },
-      { name: 'Chat series', color: '#32966C', label: 'Chat', meaning: 'Support requests received by chat, as stated in the chart legend.', confidence: 0.97, uncertainty: 'Legend association is supplied with this prepared demo.' },
+      { name: 'Delhi — Poor', color: '#E07A2B', label: 'Delhi: 32 (Poor)', meaning: 'Air quality in Poor category (value 32), marked with warning triangle symbol and horizontal line pattern.', confidence: 0.98, symbol: '▲', pattern: 'stripes', patternName: 'Horizontal stripes', uncertainty: 'Pattern and symbol mapping verified.' },
+      { name: 'Mumbai — Moderate', color: '#4A90E2', label: 'Mumbai: 55 (Moderate)', meaning: 'Air quality in Moderate category (value 55), marked with info circle symbol and stipple dot pattern.', confidence: 0.98, symbol: 'ℹ', pattern: 'dots', patternName: 'Stippled dots', uncertainty: 'Pattern and symbol mapping verified.' },
+      { name: 'Chennai — Good', color: '#2E9358', label: 'Chennai: 78 (Good)', meaning: 'Air quality in Good category (value 78), marked with checkmark symbol and horizontal block pattern.', confidence: 0.98, symbol: '✓', pattern: 'blocks', patternName: 'Segmented blocks', uncertainty: 'Pattern and symbol mapping verified.' },
+      { name: 'Kolkata — Unhealthy', color: '#8E44AD', label: 'Kolkata: 18 (Unhealthy)', meaning: 'Air quality in Unhealthy category (value 18), marked with alert cross symbol and crosshatch XXXX pattern.', confidence: 0.98, symbol: '✕', pattern: 'crosses', patternName: 'Crosshatch (XXXX)', uncertainty: 'Pattern and symbol mapping verified.' },
     ],
     issues: [
-      { severity: 'moderate', title: 'Series rely partly on hue', description: 'Red and green bars may be difficult to distinguish for some viewers if color is the only cue.' },
-      { severity: 'low', title: 'Legend matching takes extra effort', description: 'Viewers must repeatedly compare each bar color with the legend.' },
+      { severity: 'high', title: 'Color-dependent bar graph', description: 'Orange, blue, green, and purple hues carry the health category without text or pattern redundancy, making categories indistinguishable for viewers with color vision deficiency.' },
+      { severity: 'moderate', title: 'Missing direct value callouts', description: 'Viewers must estimate bar heights against distant axes without direct numeric values.' },
     ],
-    recommendations: ['Keep the series labels visible and pair them with distinct patterns or outlines.', 'Add direct values or labels where bars are short.', 'Retain the chart title and quarter labels in exported versions.'],
+    recommendations: [
+      'Convert bar fills into distinct textural patterns (horizontal lines, dense dots, segmented blocks, crosshatch XXXX).',
+      'Add redundant symbols (▲ Warning, ℹ Info, ✓ Good, ✕ Alert) with vertical indicator stem lines above bars.',
+      'Display numeric values directly adjacent to each bar.',
+      'Include a summary data table for screen readers and keyboard users.',
+    ],
     chartData: [
-      { q: 'Q1', email: 38, chat: 54 },
-      { q: 'Q2', email: 51, chat: 63 },
-      { q: 'Q3', email: 45, chat: 72 },
-      { q: 'Q4', email: 66, chat: 81 },
+      { city: 'Delhi', category: 'POOR', value: 32, symbol: '▲', pattern: 'stripes', color: '#E07A2B' },
+      { city: 'Mumbai', category: 'MODERATE', value: 55, symbol: 'ℹ', pattern: 'dots', color: '#4A90E2' },
+      { city: 'Chennai', category: 'GOOD', value: 78, symbol: '✓', pattern: 'blocks', color: '#2E9358' },
+      { city: 'Kolkata', category: 'UNHEALTHY', value: 18, symbol: '✕', pattern: 'crosses', color: '#8E44AD' },
     ],
   },
   'risk-map': {
