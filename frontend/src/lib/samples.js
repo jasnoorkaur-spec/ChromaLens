@@ -1,21 +1,72 @@
-const shell = (inner, label) => `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="620" viewBox="0 0 960 620" role="img" aria-label="${label}"><rect width="960" height="620" rx="28" fill="#fffefa"/><rect x="1" y="1" width="958" height="618" rx="27" fill="none" stroke="#d9ddd6" stroke-width="2"/>${inner}</svg>`;
+import aqiOriginalImg from '../assets/samples/aqi-original.png';
+
+const shell = (inner, label) => `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-label="${label}"><rect width="1200" height="800" fill="#fff"/>${inner}</svg>`;
 
 export const samples = [
   {
-    id: 'bar-chart', title: 'City air quality', category: 'Bar chart', description: 'City air quality categories (Poor, Moderate, Good, Unhealthy) with color-only indicators.',
-    svg: shell(`<text x="64" y="78" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#1f2b29">City Air Quality: Today</text><text x="64" y="112" font-family="Arial,sans-serif" font-size="17" fill="#66716d">Pollution levels and category status by city</text><line x1="110" y1="470" x2="880" y2="470" stroke="#b6bfbb" stroke-width="2"/><line x1="110" y1="190" x2="110" y2="470" stroke="#b6bfbb" stroke-width="2"/><g font-family="Arial,sans-serif" font-size="14" fill="#66716d"><text x="67" y="474">0</text><text x="55" y="404">25</text><text x="55" y="334">50</text><text x="55" y="264">75</text><text x="48" y="194">100</text></g><g><rect x="180" y="360" width="80" height="110" rx="4" fill="#E07A2B"/><rect x="360" y="278" width="80" height="192" rx="4" fill="#4A90E2"/><rect x="540" y="196" width="80" height="274" rx="4" fill="#2E9358"/><rect x="720" y="408" width="80" height="62" rx="4" fill="#8E44AD"/></g><g font-family="Arial,sans-serif" font-size="16" font-weight="600" fill="#35403c"><text x="220" y="500" text-anchor="middle">Delhi</text><text x="400" y="500" text-anchor="middle">Mumbai</text><text x="580" y="500" text-anchor="middle">Chennai</text><text x="760" y="500" text-anchor="middle">Kolkata</text></g><rect x="180" y="132" width="16" height="16" rx="3" fill="#E07A2B"/><text x="204" y="145" font-family="Arial,sans-serif" font-size="14" fill="#35403c">Poor</text><rect x="290" y="132" width="16" height="16" rx="3" fill="#4A90E2"/><text x="314" y="145" font-family="Arial,sans-serif" font-size="14" fill="#35403c">Moderate</text><rect x="420" y="132" width="16" height="16" rx="3" fill="#2E9358"/><text x="444" y="145" font-family="Arial,sans-serif" font-size="14" fill="#35403c">Good</text><rect x="520" y="132" width="16" height="16" rx="3" fill="#8E44AD"/><text x="544" y="145" font-family="Arial,sans-serif" font-size="14" fill="#35403c">Unhealthy</text><text x="110" y="560" font-family="Arial,sans-serif" font-size="15" fill="#66716d">Color-only status indicators without textural patterns or direct symbols.</text>`, 'City air quality bar chart with color-only categories'),
+    id: 'bar-chart',
+    title: 'AQI Levels in Four Cities',
+    category: 'Bar chart',
+    description: 'AQI levels across City A, City B, City C, and City D with a color-coded category scale.',
+    previewUrl: aqiOriginalImg,
   },
   {
-    id: 'risk-map', title: 'Regional risk outlook', category: 'Risk map', description: 'A regional map uses color-coded risk levels and a text legend.',
-    svg: shell(`<text x="64" y="78" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#1f2b29">Regional risk outlook</text><text x="64" y="112" font-family="Arial,sans-serif" font-size="17" fill="#66716d">Operational incidents · current quarter</text><g stroke="#fffefa" stroke-width="6"><path d="M145 220l120-44 77 45-18 112-104 35-94-52z" fill="#e7a64c"/><path d="M265 176l124-21 69 58-30 97-104 23-77-45 18-112z" fill="#d86650"/><path d="M389 155l111 9 50 74-43 94-79-22 30-97z" fill="#4c8a7b"/><path d="M324 333l104-23 79 22 13 95-115 50-103-57z" fill="#4c8a7b"/><path d="M550 238l124-27 83 69-41 89-119-37-47-60z" fill="#e7a64c"/><path d="M510 427l115-64 91 6 14 73-106 39-101-9z" fill="#d86650"/></g><g font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#26332f"><text x="192" y="274">NORTH</text><text x="329" y="239">CENTRAL</text><text x="433" y="259">EAST</text><text x="350" y="384">SOUTH</text><text x="590" y="278">COAST</text><text x="558" y="430">ISLANDS</text></g><text x="706" y="175" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#26332f">Risk level</text><rect x="706" y="196" width="22" height="22" rx="5" fill="#4c8a7b"/><text x="740" y="213" font-family="Arial,sans-serif" font-size="15" fill="#35403c">Low</text><rect x="706" y="232" width="22" height="22" rx="5" fill="#e7a64c"/><text x="740" y="249" font-family="Arial,sans-serif" font-size="15" fill="#35403c">Moderate</text><rect x="706" y="268" width="22" height="22" rx="5" fill="#d86650"/><text x="740" y="285" font-family="Arial,sans-serif" font-size="15" fill="#35403c">Elevated</text><text x="64" y="556" font-family="Arial,sans-serif" font-size="15" fill="#66716d">Illustrative regions for an accessibility demonstration; not a live risk assessment.</text>`, 'Regional risk outlook color-coded map'),
+    id: 'risk-map',
+    title: 'Illustrative regional service risk',
+    category: 'Risk map',
+    description: 'A regional map uses color-coded risk levels (Low, Moderate, High) and a text legend.',
+    svg: shell(
+      `<text x="80" y="75" font-family="Arial, sans-serif" font-size="31" fill="#202A2E" font-weight="700">Illustrative regional service risk</text>` +
+      `<text x="80" y="112" font-family="Arial, sans-serif" font-size="18" fill="#59636A" font-weight="500">Fictional service areas — not real geography</text>` +
+      `<path d="M200,188 l62,-15 35,34 -12,50 -74,9 -22,-42z" fill="#C9514B" stroke="#fff" stroke-width="5"/><text x="207" y="239" font-family="Arial, sans-serif" font-size="17" fill="#172126" font-weight="700">West</text>` +
+      `<path d="M400,145 l70,-8 24,48 -20,44 -66,-4 -16,-40z" fill="#E9B64D" stroke="#fff" stroke-width="5"/><text x="412" y="199" font-family="Arial, sans-serif" font-size="17" fill="#172126" font-weight="700">North</text>` +
+      `<path d="M410,323 l62,-15 35,34 -12,50 -74,9 -22,-42z" fill="#4D9B78" stroke="#fff" stroke-width="5"/><text x="417" y="374" font-family="Arial, sans-serif" font-size="17" fill="#172126" font-weight="700">Central</text>` +
+      `<path d="M615,235 l70,-8 24,48 -20,44 -66,-4 -16,-40z" fill="#C9514B" stroke="#fff" stroke-width="5"/><text x="627" y="289" font-family="Arial, sans-serif" font-size="17" fill="#172126" font-weight="700">East</text>` +
+      `<path d="M245,398 l62,-15 35,34 -12,50 -74,9 -22,-42z" fill="#4D9B78" stroke="#fff" stroke-width="5"/><text x="252" y="449" font-family="Arial, sans-serif" font-size="17" fill="#172126" font-weight="700">Southwest</text>` +
+      `<path d="M580,410 l70,-8 24,48 -20,44 -66,-4 -16,-40z" fill="#E9B64D" stroke="#fff" stroke-width="5"/><text x="592" y="464" font-family="Arial, sans-serif" font-size="17" fill="#172126" font-weight="700">Southeast</text>` +
+      `<rect x="865" y="190" width="260" height="270" rx="8" fill="#F7F8F8" stroke="#C9D0D2"/>` +
+      `<text x="895" y="235" font-family="Arial, sans-serif" font-size="23" fill="#202A2E" font-weight="700">Risk legend</text>` +
+      `<rect x="900" y="265" width="28" height="28" fill="#4D9B78" stroke="#344"/><text x="948" y="287" font-family="Arial, sans-serif" font-size="19" fill="#202A2E" font-weight="500">Low</text>` +
+      `<rect x="900" y="315" width="28" height="28" fill="#E9B64D" stroke="#344"/><text x="948" y="337" font-family="Arial, sans-serif" font-size="19" fill="#202A2E" font-weight="500">Moderate</text>` +
+      `<rect x="900" y="365" width="28" height="28" fill="#C9514B" stroke="#344"/><text x="948" y="387" font-family="Arial, sans-serif" font-size="19" fill="#202A2E" font-weight="500">High</text>` +
+      `<text x="80" y="700" font-family="Arial, sans-serif" font-size="17" fill="#59636A" font-weight="500">Prepared fictional example • each region has a written name</text>`,
+      'Illustrative regional service risk color-coded map',
+    ),
   },
   {
-    id: 'status-form', title: 'Account setup review', category: 'Status form', description: 'A form dashboard shows success and error states with labels and icons.',
-    svg: shell(`<text x="64" y="78" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#1f2b29">Account setup review</text><text x="64" y="112" font-family="Arial,sans-serif" font-size="17" fill="#66716d">Workspace onboarding · 2 checks need attention</text><rect x="64" y="150" width="832" height="94" rx="15" fill="#f2f7f3" stroke="#6c9b7b" stroke-width="2"/><circle cx="103" cy="197" r="18" fill="#187b63"/><path d="M94 197l6 6 12-14" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><text x="139" y="190" font-family="Arial,sans-serif" font-size="19" font-weight="700" fill="#22312b">Email verified · Complete</text><text x="139" y="216" font-family="Arial,sans-serif" font-size="15" fill="#596660">Confirmation sent to alex@example.com</text><rect x="64" y="265" width="832" height="94" rx="15" fill="#fff5f2" stroke="#d28773" stroke-width="2"/><circle cx="103" cy="312" r="18" fill="#b74438"/><path d="M103 301v13m0 7v1" stroke="#fff" stroke-width="4" stroke-linecap="round"/><text x="139" y="305" font-family="Arial,sans-serif" font-size="19" font-weight="700" fill="#332b29">Password strength · Needs attention</text><text x="139" y="331" font-family="Arial,sans-serif" font-size="15" fill="#665955">Use at least 12 characters, including a number.</text><rect x="64" y="380" width="832" height="94" rx="15" fill="#fff5f2" stroke="#d28773" stroke-width="2"/><circle cx="103" cy="427" r="18" fill="#b74438"/><path d="M103 416v13m0 7v1" stroke="#fff" stroke-width="4" stroke-linecap="round"/><text x="139" y="420" font-family="Arial,sans-serif" font-size="19" font-weight="700" fill="#332b29">Recovery email · Action required</text><text x="139" y="446" font-family="Arial,sans-serif" font-size="15" fill="#665955">Enter an alternate address to complete this check.</text><text x="64" y="537" font-family="Arial,sans-serif" font-size="15" fill="#66716d">States are stated in words and paired with distinct symbols and borders.</text>`, 'Account setup form with complete and needs attention states'),
+    id: 'status-form',
+    title: 'Account settings — form status example',
+    category: 'Status form',
+    description: 'An account form shows completed, error, and saved states with colored accents and icons.',
+    svg: shell(
+      `<text x="90" y="78" font-family="Arial, sans-serif" font-size="32" fill="#202A2E" font-weight="700">Account settings — form status example</text>` +
+      `<text x="100" y="160" font-family="Arial, sans-serif" font-size="20" fill="#343F45" font-weight="600">Email address</text>` +
+      `<rect x="100" y="178" width="730" height="62" rx="5" fill="#fff" stroke="#3D966C" stroke-width="3"/>` +
+      `<text x="125" y="218" font-family="Arial, sans-serif" font-size="21" fill="#202A2E" font-weight="500">alex@example.test</text>` +
+      `<circle cx="900" cy="208" r="19" fill="#3D966C"/><text x="892" y="216" font-family="Arial, sans-serif" font-size="22" fill="#fff" font-weight="700">✓</text>` +
+      `<text x="935" y="216" font-family="Arial, sans-serif" font-size="20" fill="#28754F" font-weight="700">Complete</text>` +
+      `<text x="100" y="310" font-family="Arial, sans-serif" font-size="20" fill="#343F45" font-weight="600">Phone number</text>` +
+      `<rect x="100" y="328" width="730" height="62" rx="5" fill="#fff" stroke="#C84D4D" stroke-width="3"/>` +
+      `<circle cx="900" cy="358" r="19" fill="#C84D4D"/><text x="894" y="366" font-family="Arial, sans-serif" font-size="23" fill="#fff" font-weight="700">!</text>` +
+      `<text x="935" y="366" font-family="Arial, sans-serif" font-size="20" fill="#A33A3A" font-weight="700">Error</text>` +
+      `<text x="100" y="425" font-family="Arial, sans-serif" font-size="18" fill="#A33A3A" font-weight="600">Enter a valid phone number.</text>` +
+      `<rect x="100" y="520" width="215" height="58" rx="6" fill="#285F89"/>` +
+      `<text x="150" y="557" font-family="Arial, sans-serif" font-size="19" fill="#fff" font-weight="700">Save changes</text>` +
+      `<circle cx="385" cy="550" r="17" fill="#2F6EA8"/><text x="378" y="557" font-family="Arial, sans-serif" font-size="19" fill="#fff" font-weight="700">✓</text>` +
+      `<text x="415" y="558" font-family="Arial, sans-serif" font-size="19" fill="#285F89" font-weight="700">Changes saved</text>` +
+      `<text x="100" y="700" font-family="Arial, sans-serif" font-size="17" fill="#59636A" font-weight="500">Each state uses an icon and written label in addition to color.</text>`,
+      'Account settings form status example with complete, error, and saved states',
+    ),
   },
 ];
 
-export function rasterizeSample(sample) {
+export async function rasterizeSample(sample) {
+  if (sample.previewUrl) {
+    const response = await fetch(sample.previewUrl);
+    if (!response.ok) throw new Error('Could not prepare this sample image.');
+    const blob = await response.blob();
+    return new File([blob], `${sample.id}.png`, { type: blob.type || 'image/png', lastModified: Date.now() });
+  }
   return new Promise((resolve, reject) => {
     const svgBlob = new Blob([sample.svg], { type: 'image/svg+xml;charset=utf-8' });
     const objectUrl = URL.createObjectURL(svgBlob);
@@ -23,8 +74,8 @@ export function rasterizeSample(sample) {
     image.onload = () => {
       try {
         const canvas = document.createElement('canvas');
-        canvas.width = 1440;
-        canvas.height = 930;
+        canvas.width = 1200;
+        canvas.height = 800;
         const context = canvas.getContext('2d');
         if (!context) throw new Error('Canvas is unavailable in this browser.');
         context.drawImage(image, 0, 0, canvas.width, canvas.height);

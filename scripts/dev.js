@@ -40,11 +40,11 @@ function stop(exitCode = 0) {
 process.on('SIGINT', () => stop(0));
 process.on('SIGTERM', () => stop(0));
 
-start('api', 'backend', {
+start('api', 'chromalens-backend', {
   PORT: String(apiPort),
   FRONTEND_ORIGIN: process.env.FRONTEND_ORIGIN || `http://localhost:${webPort}`,
 });
-start('web', 'frontend', {
+start('web', 'chromalens-frontend', {
   PORT: String(webPort),
   API_PROXY_URL: process.env.API_PROXY_URL || `http://127.0.0.1:${apiPort}`,
   VITE_API_BASE_URL: process.env.VITE_API_BASE_URL || '/api',
