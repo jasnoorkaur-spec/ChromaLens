@@ -43,10 +43,13 @@ export function hasGeminiKey() {
 export async function analyzeWithGemini({ imageBuffer, ocr, colors, cvdType, sampleContext }) {
   const apiKey = process.env.GEMINI_API_KEY?.trim();
   if (!apiKey) return null;
-  const model = process.env.GEMINI_MODEL?.trim() || 'gemini-3.8-flash';
-  if (!/^gemini-[a-z0-9][a-z0-9._-]{0,80}$/i.test(model)) {
-    throw new Error('GEMINI_MODEL is not a supported Gemini model identifier.');
-  }
+  const configuredModel = process.env.GEMINI_MODEL?.trim() || 'gemini-3.5-flash-lite';
+  const modelCandidates = Array.from(new Set([
+    configuredModel,
+    'gemini-3.5-flash-lite',
+    'gemini-flash-latest',
+    'gemini-3.8-flash',
+  ])).filter((m) => /^gemini-[a-z0-9][a-z0-9._-]{0,80}$/i.test(m));
 
   const ai = new GoogleGenAI({ apiKey, httpOptions: { apiVersion: 'v1beta' } });
   const context = {
@@ -57,7 +60,7 @@ export async function analyzeWithGemini({ imageBuffer, ocr, colors, cvdType, sam
   };
   const prompt = `Analyze this image for accessibility, not medical diagnosis. Use only labels and relationships genuinely supported by the image or the supplied prepared demo context. Never infer a category meaning from hue alone. If a label or meaning is uncertain, say so plainly in the meaning or uncertainty fields and use a low confidence value. Do not invent chart values, legend associations, or map facts. Be concise and actionable. Context: ${JSON.stringify(context)}`;
 
-  const timeoutMs = 14000;
+  const timeoutMs = 16000;
   let timer;
   const timeoutPromise = new Promise((_, reject) => {
     timer = setTimeout(() => {
@@ -66,9 +69,9 @@ export async function analyzeWithGemini({ imageBuffer, ocr, colors, cvdType, sam
     timer?.unref?.();
   });
 
-  const sendRequest = () => ai.interactions.create(
+  const sendRequest = (modelToUse) => ai.interactions.create(
     {
-      model,
+      model: modelToUse,
       store: false,
       input: [
         { type: 'text', text: prompt },
@@ -84,20 +87,23 @@ export async function analyzeWithGemini({ imageBuffer, ocr, colors, cvdType, sam
   );
 
   let interaction;
+  let lastError;
   try {
     interaction = await Promise.race([
       (async () => {
-        try {
-          return await sendRequest();
-        } catch (firstError) {
-          const is503 = firstError?.status === 503 || firstError?.statusCode === 503 || /503|high demand|overloaded/i.test(String(firstError?.message || ''));
-          if (is503) {
-            // Google's 503 spike is temporary: wait 1.8 seconds and retry once
-            await new Promise((resolve) => setTimeout(resolve, 1800));
-            return await sendRequest();
+        for (const candidate of modelCandidates) {
+          try {
+            return await sendRequest(candidate);
+          } catch (err) {
+            lastError = err;
+            const is503orBusy = err?.status === 503 || err?.statusCode === 503 || /503|high demand|overloaded/i.test(String(err?.message || ''));
+            if (is503orBusy) {
+              continue;
+            }
+            throw err;
           }
-          throw firstError;
         }
+        throw lastError;
       })(),
       timeoutPromise,
     ]);
